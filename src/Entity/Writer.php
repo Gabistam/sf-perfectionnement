@@ -30,14 +30,18 @@ class Writer
     private $firstname;
 
     /**
-     * @ORM\OneToMany(targetEntity=Article::class, mappedBy="writers", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Article::class, mappedBy="writer")
      */
-    private $article;
+    private $articles;
 
     public function __construct()
     {
-        $this->article = new ArrayCollection();
+        $this->articles = new ArrayCollection();
     }
+
+
+
+
 
     public function getId(): ?int
     {
@@ -71,16 +75,16 @@ class Writer
     /**
      * @return Collection|Article[]
      */
-    public function getArticle(): Collection
+    public function getArticles(): Collection
     {
-        return $this->article;
+        return $this->articles;
     }
 
     public function addArticle(Article $article): self
     {
-        if (!$this->article->contains($article)) {
-            $this->article[] = $article;
-            $article->setWriters($this);
+        if (!$this->articles->contains($article)) {
+            $this->articles[] = $article;
+            $article->setWriter($this);
         }
 
         return $this;
@@ -88,10 +92,10 @@ class Writer
 
     public function removeArticle(Article $article): self
     {
-        if ($this->article->removeElement($article)) {
+        if ($this->articles->removeElement($article)) {
             // set the owning side to null (unless already changed)
-            if ($article->getWriters() === $this) {
-                $article->setWriters(null);
+            if ($article->getWriter() === $this) {
+                $article->setWriter(null);
             }
         }
 

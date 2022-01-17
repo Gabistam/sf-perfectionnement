@@ -38,27 +38,16 @@ class Article
     private $date;
 
     /**
-     * @ORM\OneToOne(targetEntity=Category::class, cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="articles")
      */
     private $category;
 
     /**
-     * @ORM\OneToOne(targetEntity=Writer::class, cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=Writer::class, inversedBy="articles")
      */
     private $writer;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="article")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $categories;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Writer::class, inversedBy="article")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $writers;
 
     public function getId(): ?int
     {
@@ -130,33 +119,9 @@ class Article
         return $this->writer;
     }
 
-    public function setWriter(Writer $writer): self
+    public function setWriter(?Writer $writer): self
     {
         $this->writer = $writer;
-
-        return $this;
-    }
-
-    public function getCategories(): ?Category
-    {
-        return $this->categories;
-    }
-
-    public function setCategories(?Category $categories): self
-    {
-        $this->categories = $categories;
-
-        return $this;
-    }
-
-    public function getWriters(): ?Writer
-    {
-        return $this->writers;
-    }
-
-    public function setWriters(?Writer $writers): self
-    {
-        $this->writers = $writers;
 
         return $this;
     }
