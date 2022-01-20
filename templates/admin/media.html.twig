@@ -1,0 +1,21 @@
+{% extends "admin/base.html.twig" %}
+
+{% block main %}
+
+	<h2>{{media.title}}</h2>
+
+	<img src="{{ asset('medias/' ~ media.src)}}" alt="{{ media.alt }}">
+
+<div class="container">
+		<div class="card" style="width: 50%;">
+			<img src="{{ asset('medias/' ~ media.src)}}" alt="{{ media.alt }}" class="card-img-top" alt="...">
+			<div class="card-body">
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item">Titre :
+						{{ media.title }}</li>
+					
+				</ul>
+			</div>
+		</div>
+	</div>
+{% endblock %}

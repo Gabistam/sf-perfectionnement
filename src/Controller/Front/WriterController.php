@@ -4,14 +4,12 @@ namespace App\Controller\Front;
 
 use App\Repository\WriterRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class WriterController extends AbstractController
 {
 
-    /**
-     * @Route("writers", name="writer_list")
-     */
     public function writerList(WriterRepository $writerRepository)
     {
         $writers = $writerRepository->findAll();
@@ -19,13 +17,24 @@ class WriterController extends AbstractController
         return $this->render("front/writers.html.twig", ['writers' => $writers]);
     }
 
-    /**
-     * @Route("writer/{id}", name="writer_show")
-     */
     public function writerShow($id, WriterRepository $writerRepository)
     {
         $writer = $writerRepository->find($id);
 
         return $this->render("front/writer.html.twig", ['writer' => $writer]);
+    }
+
+
+    public function frontSearch(Request $request, WriterRepository $writerRepository)
+    {
+
+        // Récupérer les données rentrées dans le formulaire
+        $term = $request->query->get('term');
+        // query correspond à l'outil qui permet de récupérer les données d'un formulaire en get
+        // pour un formulaire en post on utilise query
+
+        $writers = $writerRepository->searchByTerm($term);
+
+        return $this->render('front/search.html.twig', ['writers' => $writers, 'term' => $term]);
     }
 }

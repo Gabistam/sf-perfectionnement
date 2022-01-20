@@ -1,0 +1,25 @@
+{% extends "front/base.html.twig" %}
+
+{% block main %}
+
+	{% for article in articles %}
+		<div class="container">
+			<div class="card" style="width: 50%;">
+				<img src="https://picsum.photos/450/250" class="card-img-top" alt="...">
+				<div class="card-body">
+
+					{% if article.published %}
+						<h2>{{ article.title }}</h2>
+						<h3>{{ article.date | date('d/m/Y') }}</h3>
+						<h3>{{ article.category.name }}</h3>
+						<h4>{{ article.writer.name }}
+							{{ article.writer.firstname }}</h4>
+
+					{% endif %}
+
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+
+{% endblock %}

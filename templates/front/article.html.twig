@@ -1,0 +1,30 @@
+{% extends "front/base.html.twig" %}
+
+{% block main %}
+
+	<div class="container">
+		<div class="card" style="width: 50%;">
+			<img src="https://picsum.photos/450/250" class="card-img-top" alt="...">
+			<div class="card-body">
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item">Titre :
+						{{ artitcle.title }}</li>
+					<li class="list-group-item">Description :
+						{{ artitcle.content }}</li>
+					<li class="list-group-item">date de publication :
+						{{ artitcle.date }}</li>
+					<li class="list-group-item">
+						:Nom de l'auteur :
+						{{ artitcle.writer.name }}</li>
+					<li class="list-group-item">
+						:Prénom de l'auteur :
+						{{ artitcle.writer.firstname }}</li>
+					<li class="list-group-item">
+						:Catégorie :
+						{{ artitcle.category.name }}</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

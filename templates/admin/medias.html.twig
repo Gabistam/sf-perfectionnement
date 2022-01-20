@@ -1,0 +1,18 @@
+{% extends "admin/base.html.twig" %}
+
+{% block main %}
+
+	{% for media in medias %}
+		<div class="container">
+			<div class="card" style="width: 50%;">
+				<img src="{{ asset("/images" ~ image.src) }}" alt="{{ image.alt }}" class="card-img-top" alt="...">
+				<div class="card-body">
+
+                <h5>{{ image.title }}</h5>
+
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+
+{% endblock %}

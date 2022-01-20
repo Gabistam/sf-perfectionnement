@@ -2,108 +2,87 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Artitcle;
-use App\Repository\ArtitcleRepository;
+use App\Entity\Article;
 use App\Form\ArticleType;
+use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-
-class AdminArtitcleController extends AbstractController
+class AdminArticleController extends AbstractController
 {
-    // Pour les trois entités (Artitcle, Category, Brand): faire le CRUD complet dans
-    // des AdminController
 
-    // Modèle des routes @Route("/admin/create/artitcle/", name="admin_create_artitcle")
-    // Bonus : trouver un moyen de pouvoir supprimer des catégories et des brands même
-    // si elles sont liés à un artitcle
-
-    /**
-     * @Route("admin/artitcles", name="admin_artitcle_list")
-     */
-    public function adminListArtitcle(ArtitcleRepository $artitcleRepository)
+    public function articleList(ArticleRepository $articleRepository)
     {
-        $artitcles = $artitcleRepository->findAll();
+        $articles = $articleRepository->findAll();
 
-        return $this->render("admin/adminArtitcles.html.twig", ['artitcles' => $artitcles]);
+        return $this->render("admin/articles.html.twig", ['articles' => $articles]);
     }
 
-    /**
-     * @Route("admin/artitcle/{id}", name="admin_artitcle_show")
-     */
-    public function adminShowArtitcle($id, ArtitcleRepository $artitcleRepository)
+    public function articleShow($id, ArticleRepository $articleRepository)
     {
-        $artitcle = $artitcleRepository->find($id);
+        $article = $articleRepository->find($id);
 
-        return $this->render("admin/adminArtitcle.html.twig", ['artitcle' => $artitcle]);
+        return $this->render("admin/article.html.twig", ['article' => $article]);
     }
 
-    /**
-     * @Route("admin/update/artitcle/{id}", name="admin_update_artitcle")
-     */
-    public function adminUpdateArtitcle(
+    public function articleUpdate(
         $id,
-        ArtitcleRepository $artitcleRepository,
+        ArticleRepository $articleRepository,
         Request $request,
         EntityManagerInterface $entityManagerInterface
     ) {
+        $article = $articleRepository->find($id);
 
-        $artitcle = $artitcleRepository->find($id);
+        $articleForm = $this->createForm(ArticleType::class, $article);
 
-        $artitcleForm = $this->createForm(ArtitcleType::class, $artitcle);
+        $articleForm->handleRequest($request);
 
-        $artitcleForm->handleRequest($request);
-
-        if ($artitcleForm->isSubmitted() && $artitcleForm->isValid()) {
-            $entityManagerInterface->persist($artitcle);
+        if ($articleForm->isSubmitted() && $articleForm->isValid()) {
+            $entityManagerInterface->persist($article);
             $entityManagerInterface->flush();
 
-            return $this->redirectToRoute("admin_artitcle_list");
+            return $this->redirectToRoute('admin_article_list');
         }
 
-
-        return $this->render("admin/adminArtitcleform.html.twig", ['artitcleForm' => $artitcleForm->createView()]);
+        return $this->render("admin/articleform.html.twig", ['articleForm' => $articleForm->createView()]);
     }
 
-    /**
-     * @Route("admin/create/artitcle/", name="admin_artitcle_create")
-     */
-    public function adminArtitcleCreate(Request $request, EntityManagerInterface $entityManagerInterface)
-    {
-        $artitcle = new Artitcle();
-
-        $artitcleForm = $this->createForm(ArtitcleType::class, $artitcle);
-
-        $artitcleForm->handleRequest($request);
-
-        if ($artitcleForm->isSubmitted() && $artitcleForm->isValid()) {
-            $entityManagerInterface->persist($artitcle);
-            $entityManagerInterface->flush();
-
-            return $this->redirectToRoute("admin_artitcle_list");
-        }
-
-
-        return $this->render("admin/adminArtitcleform.html.twig", ['artitcleForm' => $artitcleForm->createView()]);
-    }
-
-    /**
-     * @Route("admin/delete/artitcle/{id}", name="admin_delete_artitcle")
-     */
-    public function adminDeleteArtitcle(
-        $id,
-        ArtitcleRepository $artitcleRepository,
-        EntityManagerInterface $entityManagerInterface
+    public function createArticle(
+        EntityManagerInterface $entityManagerInterface,
+        Request $request
     ) {
 
-        $artitcle = $artitcleRepository->find($id);
+        $article = new Article();
 
-        $entityManagerInterface->remove($artitcle);
+        $articleForm = $this->createForm(ArticleType::class, $article);
+
+        $articleForm->handleRequest($request);
+
+        if ($articleForm->isSubmitted() && $articleForm->isValid()) {
+
+            $article->setDate(new \DateTime("NOW"));
+            $entityManagerInterface->persist($article);
+            $entityManagerInterface->flush();
+
+            return $this->redirectToRoute('admin_article_list');
+        }
+
+        return $this->render("admin/articleform.html.twig", ['articleForm' => $articleForm->createView()]);
+    }
+
+    public function deletetArticle(
+        $id,
+        EntityManagerInterface $entityManagerInterface,
+        ArticleRepository $articleRepository
+    ) {
+        $article = $articleRepository->find($id);
+
+        $entityManagerInterface->remove($article);
 
         $entityManagerInterface->flush();
 
-        return $this->redirectToRoute("admin_artitcle_list");
+        return $this->redirectToRoute("admin_article_list");
     }
 }
